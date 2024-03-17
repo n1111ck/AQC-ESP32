@@ -13,7 +13,9 @@ AQC::CAQCHandler::CAQCHandler(
     m_sensorsHandler(timeSample, 17, 16, 27, 35, 14, 34),
     m_model(model),
     m_motor(motor),
-    m_controller(controller)
+    m_controller(controller),
+    m_pMotor({ CMotor(32), CMotor(33), CMotor(25), CMotor(26) }),
+    m_deployer(13)
 {
 
 }
@@ -21,24 +23,38 @@ AQC::CAQCHandler::CAQCHandler(
 int32_t
 AQC::CAQCHandler::begin()
 {
-    
     int32_t beginResult = 0;
+
+    // Start motors
+    m_pMotor[0].begin();
+    m_pMotor[1].begin();
+    m_pMotor[2].begin();
+    m_pMotor[3].begin();
+
+    // Save time (ESC's must wait 2 seconds to arm)
+    uint16_t armTime = millis();
+
+    // Start deployer
+    m_deployer.begin();
 
     // Start sensors
     beginResult += m_sensorsHandler.begin();
-    /*
 
     // Start filesystem
     beginResult += m_filesystem.begin("final");
 
     // Start RF Receiver
-    m_receiver.begin(2400, 39);
-
-    // Start motors
+    m_receiver.begin(2400, 39); 
 
     // Check for errors
     if(beginResult >= 0)
     {
+        // Wait fininsh of arm time
+        if(millis() - armTime < 2000)
+        {
+            vTaskDelay(pdMS_TO_TICKS(5000 - (millis() - armTime)));
+        }
+
         // Start controller loop 
     }
     else
@@ -57,81 +73,20 @@ AQC::CAQCHandler::begin()
             0                                       //Core where the task should run 
         );  
     }
-    */
 
     return beginResult;
 }
 
-AQC::FVector3
-AQC::CAQCHandler::getAngle()
-{
-    return m_sensorsHandler.getAngle();
-}
-
-float_t
-AQC::CAQCHandler::getAltitude()
-{
-    return m_sensorsHandler.getAltitude();
-}
-
-float_t
-AQC::CAQCHandler::getAltitudeVelocity()
-{
-    return m_sensorsHandler.getAltitudeVelocity();
-}
-
-void
-AQC::CAQCHandler::refresh()
-{
-    m_sensorsHandler.refresh();
-}
-
 void 
-AQC::CAQCHandler::updateGPS()
+AQC::CAQCHandler::calibrate()
 {
-    m_sensorsHandler.updateGPS();
-}
-
-double_t
-AQC::CAQCHandler::getLatitude()
-{
-   return  m_sensorsHandler.getLatitude();
-}
-
-double_t
-AQC::CAQCHandler::getLongitude()
-{
-    return m_sensorsHandler.getLongitude();
-}
-
-uint32_t
-AQC::CAQCHandler::getSatellites()
-{
-    return m_sensorsHandler.getSatellites();
-}
-
-uint32_t
-AQC::CAQCHandler::getFailed()
-{
-    return m_sensorsHandler.getFailed();
-}
-
-void
-AQC::CAQCHandler::addToQueue(std::string message)
-{
-    m_filesystem.add(message);
-}
-
-float_t
-AQC::CAQCHandler::getReference()
-{
-    return m_receiver.getReference().m_altitude;
-}
-
-float_t
-AQC::CAQCHandler::getDistance()
-{
-    return m_sensorsHandler.getBelowDistance();
+    pinMode(2, OUTPUT);
+    digitalWrite(2, false);
+    m_pMotor[0].calibrate();
+    m_pMotor[1].calibrate();
+    m_pMotor[2].calibrate();
+    m_pMotor[3].calibrate();
+    digitalWrite(2, true);
 }
 
 void 

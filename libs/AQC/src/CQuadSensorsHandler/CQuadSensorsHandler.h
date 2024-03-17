@@ -1,12 +1,12 @@
 #ifndef _CQUADSENSORSHANDLER_H_
 #define _CQUADSENSORSHANDLER_H_
 
-#include "CInertialMeasurementUnit/CInertialMeasurementUnit.h"
-#include "CBarometer/CBarometer.h"
-#include "CCompass/CCompass.h"
+#include "CQuadSensorsHandler/CInertialMeasurementUnit/CInertialMeasurementUnit.h"
+#include "CQuadSensorsHandler/CDistanceDetector/CDistanceDetector.h"
+#include "CQuadSensorsHandler/CBarometer/CBarometer.h"
+#include "CQuadSensorsHandler/CCompass/CCompass.h"
+#include "CQuadSensorsHandler/CGPS/CGPS.h"
 #include "DataTypes/DataTypes.h"
-#include "CGPS/CGPS.h"
-#include "CDistanceDetector/CDistanceDetector.h"
 
 namespace AQC
 {
