@@ -1,19 +1,20 @@
 #include "CQuadSensorsHandler.h"
 
-AQC::CQuadSensorsHandler::CQuadSensorsHandler(float_t timeSample):
+// rx tx (17, 16)
+
+AQC::CQuadSensorsHandler::CQuadSensorsHandler(float_t timeSample, 
+                uint8_t gpsRxPin, 
+                uint8_t gpsTxPin, 
+                uint8_t frontTrigPin,
+                uint8_t frontEchoPin,
+                uint8_t belowTrigPin,
+                uint8_t belowEchoPin
+    ):
     m_timeSample(timeSample),
     m_imu({0.18, 0.13, 0.02}),
-    m_altitude(),
-    m_altitudeVelocity(),
-    m_angle({}),
-    m_angleRate({}),
-    m_angleUncertainty({}),
-    m_altitudeUncertainty({})
-{
-    
-}
-
-AQC::CQuadSensorsHandler::~CQuadSensorsHandler()
+    m_gps(gpsRxPin, gpsTxPin),
+    m_front(frontTrigPin, frontEchoPin),
+    m_below(belowTrigPin, belowEchoPin)
 {
     
 }
@@ -21,25 +22,26 @@ AQC::CQuadSensorsHandler::~CQuadSensorsHandler()
 int32_t
 AQC::CQuadSensorsHandler::begin(TwoWire* bus)
 {
-    int32_t rStatus = 1;
+    int32_t rStatus = 0;
 
     // Start desired I2C interface
-    bus->setClock(400000);
+    /*bus->setClock(400000);
     bus->begin();
 
     // Try to start IMU
-    rStatus += m_imu.begin(bus) > 0 ? 0 : -1;
+    rStatus += m_imu.begin(bus);
 
     // Try to start baro
-    rStatus += m_baro.begin(bus) > 0 ? 0 : -2;
+    rStatus += m_baro.begin(bus);
 
-    // Try to start baro
-    rStatus += m_compass.begin(bus) > 0 ? 0 : -3;
+    // Try to start compass
+    rStatus += m_compass.begin(bus);
 
-    // All begins succesfull
-    if(rStatus == 0)
-    {
-    }
+    // Try to start GPS
+    rStatus += m_gps.begin();*/
+
+    // Try to start distance sensor
+    rStatus += CDistanceDetector::begin();
 
     return rStatus;
 }
@@ -194,4 +196,47 @@ AQC::CQuadSensorsHandler::refresh()
         pow(0.1, 2), 
         pow(0.3, 2)
     );
+}
+
+void 
+AQC::CQuadSensorsHandler::updateGPS()
+{
+    m_gps.refresh();
+}
+
+double_t 
+AQC::CQuadSensorsHandler::getLongitude()
+{
+    return m_gps.getLongitude();
+}
+
+double_t 
+AQC::CQuadSensorsHandler::getLatitude()
+{
+    return m_gps.getLatitude();
+
+}
+
+uint32_t 
+AQC::CQuadSensorsHandler::getSatellites()
+{
+    return m_gps.getSatellites();
+}
+
+uint32_t 
+AQC::CQuadSensorsHandler::getFailed()
+{
+    return m_gps.getFailed();
+}
+
+float_t
+AQC::CQuadSensorsHandler::getFrontDistance()
+{
+    return m_front.getDistance();
+}
+
+float_t
+AQC::CQuadSensorsHandler::getBelowDistance()
+{
+    return m_below.getDistance();
 }

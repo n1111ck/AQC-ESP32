@@ -1,4 +1,5 @@
 #include "CBarometer/CBarometer.h"
+#include "DataTypes/DataTypes.h"
 
 AQC::CBarometer::CBarometer()
 {
@@ -26,7 +27,7 @@ int32_t
 AQC::CBarometer::begin(TwoWire* bus)
 {
     // Begin Adafruit Sensor
-    int32_t rState = Adafruit_BMP085::begin(BMP085_STANDARD, bus) ? 1 : -1;
+    int32_t rState = Adafruit_BMP085::begin(BMP085_STANDARD, bus) ? 0 : SErrorCode::s_BARO;
 
     // Calibrate sensor to offset current altitude
     calibrate();

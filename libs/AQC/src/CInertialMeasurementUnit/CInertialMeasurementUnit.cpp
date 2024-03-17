@@ -16,7 +16,7 @@ int32_t
 AQC::CInertialMeasurementUnit::begin(TwoWire* bus)
 {
     // Begin Adafruit Sensor
-    int32_t rState = Adafruit_MPU6050::begin(MPU6050_I2CADDR_DEFAULT, bus, 0) ? 1 : -1; 
+    int32_t rState = Adafruit_MPU6050::begin(MPU6050_I2CADDR_DEFAULT, bus, 0) ? 0 : SErrorCode::s_IMU; 
 
     // Begin successfull
     if(rState)

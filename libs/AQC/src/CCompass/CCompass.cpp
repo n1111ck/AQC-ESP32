@@ -31,7 +31,7 @@ int32_t
 AQC::CCompass::begin(TwoWire* bus)
 {
     // Begin Adafruit Sensor
-    int32_t rState = Adafruit_HMC5883_Unified::begin(bus) ? 1 : -1;
+    int32_t rState = Adafruit_HMC5883_Unified::begin(bus) ? 0 : SErrorCode::s_COMPASS;
 
     // TODO: calibration
     calibrate();
