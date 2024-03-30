@@ -14,7 +14,10 @@ AQC::CQuadSensorsHandler::CQuadSensorsHandler(float_t timeSample,
     m_imu({0.18, 0.13, 0.02}),
     m_gps(gpsRxPin, gpsTxPin),
     m_front(frontTrigPin, frontEchoPin),
-    m_below(belowTrigPin, belowEchoPin)
+    m_below(belowTrigPin, belowEchoPin),
+    m_angle({0.0, 0.0, 0.0}),
+    m_angleRate({0.0, 0.0, 0.0}),
+    m_angleUncertainty({0.0, 0.0, 0.0})
 {
     
 }
@@ -25,20 +28,20 @@ AQC::CQuadSensorsHandler::begin(TwoWire* bus)
     int32_t rStatus = 0;
 
     // Start desired I2C interface
-    /*bus->setClock(400000);
+    bus->setClock(400000);
     bus->begin();
 
     // Try to start IMU
     rStatus += m_imu.begin(bus);
 
     // Try to start baro
-    rStatus += m_baro.begin(bus);
+    //rStatus += m_baro.begin(bus);
 
     // Try to start compass
     rStatus += m_compass.begin(bus);
 
     // Try to start GPS
-    rStatus += m_gps.begin();*/
+    rStatus += m_gps.begin();
 
     // Try to start distance sensor
     rStatus += CDistanceDetector::begin();
@@ -184,7 +187,7 @@ AQC::CQuadSensorsHandler::refresh()
     );
 
     // Capture altitude data
-    altMeasured = m_baro.getAltitude();
+    /*altMeasured = m_baro.getAltitude();
 
     // Altitude
     kalman_altitude(
@@ -195,7 +198,7 @@ AQC::CQuadSensorsHandler::refresh()
         m_altitudeUncertainty,
         pow(0.1, 2), 
         pow(0.3, 2)
-    );
+    );*/
 }
 
 void 

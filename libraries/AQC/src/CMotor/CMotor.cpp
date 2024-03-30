@@ -1,7 +1,8 @@
 #include "CMotor/CMotor.h"
 
-AQC::CMotor::CMotor(uint8_t port):
-    m_port(port)
+AQC::CMotor::CMotor(uint8_t port, uint16_t maxPercentage):
+    m_port(port),
+    m_powerLimitation(static_cast<float_t>(maxPercentage)/100.0)
 {
 
 }
@@ -28,5 +29,8 @@ AQC::CMotor::calibrate()
 void
 AQC::CMotor::speed(float_t thrustPercentage)
 {
+    thrustPercentage *= m_powerLimitation;
+
     Servo::writeMicroseconds(map(thrustPercentage, 0, 100, s_MIN_VALUE, s_MAX_VALUE));
+    Serial.println(thrustPercentage);
 }

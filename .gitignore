@@ -1,0 +1,19 @@
+# Ignore everything in repository root 
+/*
+
+# Files to not ignore
+!/.gitignore
+!/libraries
+
+# Folder to not ignore
+!/libraries/Adafruit_BMP085_Library/
+!/libraries/Adafruit_BusIO/
+!/libraries/Adafruit_HMC5883_Unified/
+!/libraries/Adafruit_MPU6050/
+!/libraries/Adafruit_Unified_Sensor/
+!/libraries/AQC/
+!/libraries/ESP32Servo/
+!/libraries/TinyGPSPlus/
+
+
+

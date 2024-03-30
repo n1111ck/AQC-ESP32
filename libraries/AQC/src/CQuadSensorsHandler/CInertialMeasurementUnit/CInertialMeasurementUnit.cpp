@@ -89,6 +89,8 @@ AQC::CInertialMeasurementUnit::getData(FVector3& angularRate, FVector3& linAccel
     linAccel.m_x = a.acceleration.x + m_linAccelOffset.m_x;
     linAccel.m_y = -(a.acceleration.y + m_linAccelOffset.m_y);
     linAccel.m_z = a.acceleration.z + m_linAccelOffset.m_z;
+
+    Serial.println(angularRate.to_string());
 }
 
 AQC::FVector3

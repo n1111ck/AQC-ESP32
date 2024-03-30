@@ -30,7 +30,6 @@ AQC::CGPS::begin()
             receivedValid = 0;
         }
     }
-
     return receivedValid;
 }
 

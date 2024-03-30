@@ -4,13 +4,15 @@
 #include <vector>
 #include "DataTypes/DataTypes.h"
 
+#include <EEPROM.h>
+
 AQC::CAQCHandler::CAQCHandler(
                 float_t timeSample,
                 SModel model,
                 SMotor motor,
                 SController controller
                 ):
-    m_sensorsHandler(timeSample, 17, 16, 27, 35, 14, 34),
+    m_sensorsHandler(timeSample, 16, 17, 27, 35, 14, 34),
     m_model(model),
     m_motor(motor),
     m_controller(controller),
@@ -30,7 +32,7 @@ AQC::CAQCHandler::begin()
     m_pMotor[1].begin();
     m_pMotor[2].begin();
     m_pMotor[3].begin();
-
+    
     // Save time (ESC's must wait 2 seconds to arm)
     uint16_t armTime = millis();
 
@@ -55,7 +57,11 @@ AQC::CAQCHandler::begin()
             vTaskDelay(pdMS_TO_TICKS(5000 - (millis() - armTime)));
         }
 
-        // Start controller loop 
+        // Start controller loop
+        while(1)
+        {
+            m_sensorsHandler.refresh();
+        }
     }
     else
     {
@@ -97,8 +103,6 @@ AQC::CAQCHandler::threadError(void* params)
     // Set internal led pin
     pinMode(2, OUTPUT);
     digitalWrite(2, 0);
-
-    Serial.println(errorCodeRaw);
 
     // Parse error code
     bool filesystemError = errorCodeRaw/SErrorCode::s_FILESYSTEM != 0;
